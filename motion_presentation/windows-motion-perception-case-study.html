@@ -1,0 +1,1008 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Windows Motion Perception Presentation</title>
+  <link rel="icon" href="data:," />
+  <script>
+    (() => {
+      // Fluent light mode only.
+      document.documentElement.setAttribute("data-theme", "light");
+    })();
+  </script>
+  <style>
+/* Windows 11 / Fluent Design System tokens */
+:root {
+  color-scheme: light;
+  --cp-bg: #f3f3f3;                       /* SolidBackgroundFillColorBase */
+  --cp-bg-elevated: #fbfbfb;              /* LayerFillColorDefault */
+  --cp-surface: #ffffff;                  /* CardBackgroundFillColorDefault */
+  --cp-surface-soft: #f0f0f0;             /* SubtleFillColorSecondary */
+  --cp-border: rgba(0, 0, 0, 0.0578);     /* CardStrokeColorDefault */
+  --cp-border-strong: rgba(0, 0, 0, 0.16);/* ControlStrongStrokeColorDefault */
+  --cp-text: #1a1a1a;                     /* TextFillColorPrimary */
+  --cp-text-muted: #5e5e5e;               /* TextFillColorSecondary */
+  --cp-text-soft: #767676;                /* TextFillColorTertiary */
+  --cp-accent: #005fb8;                   /* AccentTextFillColorPrimary (on light) */
+  --cp-accent-fill: #0078d4;              /* AccentFillColorDefault */
+  --cp-accent-hover: #0067c0;             /* AccentFillColorSecondary */
+  --cp-accent-soft: rgba(0, 120, 212, 0.08);
+  --cp-accent-fg: #ffffff;                /* TextOnAccentFillColorPrimary */
+  --cp-success: #0f7b0f;
+  --cp-danger: #c42b1c;
+  --cp-warning: #9d5d00;
+  --cp-link: #005fb8;
+  --cp-shadow: 0 8px 16px rgba(0, 0, 0, 0.14);   /* Flyout shadow */
+  --cp-shadow-card: 0 2px 4px rgba(0, 0, 0, 0.04);
+  --cp-overlay: rgba(255, 255, 255, 0.7);
+  --cp-panel: rgba(252, 252, 252, 0.7);
+  --cp-panel-strong: rgba(243, 243, 243, 0.85);  /* Mica titlebar feel */
+  --cp-sheen: rgba(255, 255, 255, 0.6);
+  --cp-highlight: rgba(0, 120, 212, 0.06);
+  --cp-radius-card: 8px;                  /* OverlayCornerRadius */
+  --cp-radius-control: 4px;               /* ControlCornerRadius */
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #202020;                       /* SolidBackgroundFillColorBase */
+  --cp-bg-elevated: #2b2b2b;              /* LayerFillColorDefault */
+  --cp-surface: #2d2d2d;                  /* CardBackgroundFillColorDefault */
+  --cp-surface-soft: #323232;             /* SubtleFillColorSecondary */
+  --cp-border: rgba(255, 255, 255, 0.0837);
+  --cp-border-strong: rgba(255, 255, 255, 0.18);
+  --cp-text: #ffffff;                     /* TextFillColorPrimary */
+  --cp-text-muted: #cfcfcf;               /* TextFillColorSecondary */
+  --cp-text-soft: #9a9a9a;                /* TextFillColorTertiary */
+  --cp-accent: #60cdff;                   /* AccentTextFillColorPrimary (dark) */
+  --cp-accent-fill: #60cdff;              /* AccentFillColorDefault (dark) */
+  --cp-accent-hover: #4cc2ff;
+  --cp-accent-soft: rgba(96, 205, 255, 0.12);
+  --cp-accent-fg: #000000;                /* TextOnAccentFillColorPrimary (dark) */
+  --cp-success: #6ccb5f;
+  --cp-danger: #ff99a4;
+  --cp-warning: #fce100;
+  --cp-link: #60cdff;
+  --cp-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  --cp-shadow-card: 0 2px 4px rgba(0, 0, 0, 0.18);
+  --cp-overlay: rgba(58, 58, 58, 0.7);
+  --cp-panel: rgba(43, 43, 43, 0.7);
+  --cp-panel-strong: rgba(32, 32, 32, 0.85);
+  --cp-sheen: rgba(255, 255, 255, 0.06);
+  --cp-highlight: rgba(96, 205, 255, 0.07);
+  --cp-radius-card: 8px;
+  --cp-radius-control: 4px;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  overflow: hidden;
+  font-family: "Segoe UI Variable Display", "Segoe UI Variable Text", "Segoe UI", "Segoe UI Variable", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+}
+a { color: var(--cp-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+button {
+  font: inherit;
+  font-weight: 600;
+  border: 1px solid var(--cp-border-strong);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  border-radius: var(--cp-radius-control);
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+button:hover { background: var(--cp-surface-soft); border-color: var(--cp-border-strong); }
+button:active { background: var(--cp-bg-elevated); opacity: .85; }
+button:focus-visible { outline: 2px solid var(--cp-accent-fill); outline-offset: 2px; }
+.app {
+  height: 100%;
+  display: grid;
+  grid-template-rows: 1fr;
+}
+.primary { background: var(--cp-accent-fill); color: var(--cp-accent-fg); border-color: transparent; }
+.primary:hover { background: var(--cp-accent-hover); color: var(--cp-accent-fg); opacity: 1; }
+.primary:active { background: var(--cp-accent-hover); color: var(--cp-accent-fg); opacity: .85; }
+.deck-shell {
+  position: relative;
+  display: grid;
+  grid-template-columns: 76px 1fr;
+  min-height: 0;
+}
+.rail {
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 12px 10px;
+  border-right: 1px solid var(--cp-border);
+  background: var(--cp-bg-elevated);
+}
+.dot {
+  width: 48px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 8px;
+  border-radius: var(--cp-radius-control);
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  transition: border-color 140ms ease-out, background 140ms ease-out, color 140ms ease-out;
+}
+.dot:hover { background: var(--cp-surface-soft); }
+.dot.active {
+  background: var(--cp-accent-fill);
+  color: var(--cp-accent-fg);
+  border-color: transparent;
+}
+.stage {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+.slide {
+  position: absolute;
+  inset: 0;
+  display: none;
+  padding: clamp(28px, 4vw, 56px);
+  overflow: auto;
+  background:
+    radial-gradient(circle at top right, var(--cp-highlight), transparent 28%),
+    var(--cp-bg);
+}
+.slide.active {
+  display: grid;
+  align-content: center;
+  animation: slideIn 260ms cubic-bezier(0, 0, 0, 1);
+}
+.slide.compact { align-content: start; }
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(28px) scale(.995); }
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+.slide-inner { width: min(1180px, 100%); margin: 0 auto; }
+/* Consistent vertical rhythm between top-level blocks */
+.slide-inner:not(.split) { display: flex; flex-direction: column; }
+.slide-inner:not(.split) > * { margin: 0; }
+.slide-inner:not(.split) > * + * { margin-top: clamp(18px, 2.6vh, 30px); }
+.split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, .92fr); gap: clamp(28px, 4vw, 48px); align-items: center; }
+.split > div { display: flex; flex-direction: column; justify-content: center; }
+.split > div > * { margin: 0; }
+.split > div > * + * { margin-top: clamp(14px, 2vh, 22px); }
+.three { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.four { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.five-card { grid-auto-rows: 1fr; }
+.eyebrow {
+  color: var(--cp-accent);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+h1, h2, h3, p { margin-top: 0; }
+h1 {
+  font-size: clamp(40px, 5.4vw, 68px);
+  font-weight: 600;
+  line-height: 1.06;
+  letter-spacing: -.02em;
+  margin-bottom: 20px;
+}
+h2 {
+  font-size: clamp(28px, 3.6vw, 42px);
+  font-weight: 600;
+  line-height: 1.14;
+  letter-spacing: -.01em;
+  margin-bottom: 18px;
+}
+h3 { font-size: 20px; font-weight: 600; line-height: 1.3; margin-bottom: 8px; }
+p, li { color: var(--cp-text-muted); line-height: 1.5; font-size: 15px; }
+.lead { font-size: clamp(18px, 1.8vw, 22px); font-weight: 400; line-height: 1.4; color: var(--cp-text); }
+.sublead { font-size: 16px; color: var(--cp-text-muted); }
+.card, .panel, .source-card, .mini-slide {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: var(--cp-radius-card);
+  box-shadow: var(--cp-shadow-card);
+}
+.card { padding: 20px; transition: border-color 160ms ease-out, box-shadow 160ms ease-out; }
+.card:hover { border-color: var(--cp-border-strong); box-shadow: var(--cp-shadow); }
+.panel { padding: 26px; }
+.source-card { padding: 16px; }
+.source-card small { display: block; color: var(--cp-text-soft); line-height: 1.4; margin-top: 6px; }
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--cp-border-strong);
+  border-radius: var(--cp-radius-control);
+  padding: 5px 12px;
+  color: var(--cp-text-muted);
+  background: var(--cp-surface-soft);
+  font-size: 13px;
+  font-weight: 600;
+}
+.metric {
+  font-size: clamp(40px, 5vw, 64px);
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: -.02em;
+  color: var(--cp-accent);
+}
+.quote {
+  font-size: clamp(24px, 3.2vw, 40px);
+  line-height: 1.16;
+  letter-spacing: -.01em;
+  font-weight: 600;
+  color: var(--cp-text);
+}
+.matrix {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1.2fr;
+  overflow: hidden;
+  border: 1px solid var(--cp-border);
+  border-radius: var(--cp-radius-card);
+  background: var(--cp-surface);
+}
+.matrix > div {
+  padding: 14px 16px;
+  border-right: 1px solid var(--cp-border);
+  border-bottom: 1px solid var(--cp-border);
+  color: var(--cp-text-muted);
+  font-size: 15px;
+}
+.matrix > div:nth-child(3n) { border-right: 0; }
+.matrix .head {
+  background: var(--cp-bg-elevated);
+  color: var(--cp-accent);
+  font-weight: 600;
+}
+.timeline {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.timebox {
+  padding: 18px;
+  border-radius: var(--cp-radius-card);
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  box-shadow: var(--cp-shadow-card);
+  min-height: 154px;
+}
+.timebox strong { display: block; font-size: 28px; font-weight: 600; color: var(--cp-accent); margin-bottom: 8px; }
+.demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.demo-stage {
+  height: 280px;
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--cp-radius-card);
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface-soft);
+}
+.demo-label { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 10px; }
+.demo-label span { font-weight: 600; }
+.demo-label small { color: var(--cp-text-muted); }
+.hero-motion {
+  position: relative;
+  height: 360px;
+  overflow: hidden;
+  border-radius: var(--cp-radius-card);
+  border: 1px solid var(--cp-border);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.74), rgba(255,255,255,.36)),
+    radial-gradient(circle at 76% 18%, rgba(0,120,212,.14), transparent 34%),
+    var(--cp-surface-soft);
+}
+.hero-motion .shell-window {
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  width: 320px;
+  height: 208px;
+  border: 1px solid var(--cp-border-strong);
+  border-radius: 10px;
+  background: rgba(255,255,255,.94);
+  box-shadow: 0 18px 38px rgba(0,0,0,.14);
+  overflow: hidden;
+  transform-origin: 50% 100%;
+  animation: heroWindow 4.8s cubic-bezier(.16,1,.3,1) infinite;
+}
+.hero-motion .shell-window::before {
+  content: "";
+  display: block;
+  height: 34px;
+  border-bottom: 1px solid var(--cp-border);
+  background:
+    radial-gradient(circle at calc(100% - 18px) 17px, var(--cp-text-soft) 2px, transparent 2.6px),
+    radial-gradient(circle at calc(100% - 38px) 17px, var(--cp-text-soft) 2px, transparent 2.6px),
+    radial-gradient(circle at calc(100% - 58px) 17px, var(--cp-text-soft) 2px, transparent 2.6px),
+    var(--cp-bg-elevated);
+}
+.hero-motion .content-line {
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--cp-surface-soft);
+  transform-origin: left center;
+  animation: heroReveal 4.8s cubic-bezier(.16,1,.3,1) infinite;
+}
+.hero-motion .content-line.accent { top: 58px; background: var(--cp-accent-soft); }
+.hero-motion .content-line.one { top: 90px; right: 70px; }
+.hero-motion .content-line.two { top: 120px; right: 36px; animation-delay: .08s; }
+.hero-motion .content-line.three { top: 150px; right: 112px; animation-delay: .16s; }
+.hero-motion .taskbar {
+  position: absolute;
+  left: 50%;
+  bottom: 22px;
+  width: 360px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 16px;
+  border: 1px solid var(--cp-border);
+  border-radius: 999px;
+  background: rgba(255,255,255,.84);
+  box-shadow: 0 8px 20px rgba(0,0,0,.08);
+  transform: translateX(-50%);
+}
+.hero-motion .task-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: var(--cp-surface-soft);
+}
+.hero-motion .task-icon.windows {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  padding: 4px;
+  background: var(--cp-accent-fill);
+  animation: heroPulse 4.8s ease infinite;
+}
+.hero-motion .task-icon.windows span { background: var(--cp-accent-fg); opacity: .95; }
+.hero-motion .signal {
+  position: absolute;
+  left: 50%;
+  bottom: 48px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--cp-accent-fill);
+  transform: translateX(-50%);
+  animation: heroSignal 4.8s ease-out infinite;
+}
+@keyframes heroPulse {
+  0%, 9%, 100% { transform: scale(1); }
+  12% { transform: scale(.88); }
+  18% { transform: scale(1.04); }
+  26% { transform: scale(1); }
+}
+@keyframes heroSignal {
+  0%, 8% { opacity: 0; transform: translateX(-50%) scale(.4); }
+  12% { opacity: .9; transform: translateX(-50%) scale(1); }
+  32%, 100% { opacity: 0; transform: translateX(-50%) translateY(-70px) scale(2.8); }
+}
+@keyframes heroWindow {
+  0%, 14% { opacity: 0; transform: translate(-50%, 26%) scale(.84); filter: blur(1px); }
+  28%, 68% { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: blur(0); }
+  82%, 100% { opacity: 0; transform: translate(-50%, -58%) scale(.98); }
+}
+@keyframes heroReveal {
+  0%, 28% { opacity: 0; transform: scaleX(.28); }
+  42%, 68% { opacity: 1; transform: scaleX(1); }
+  82%, 100% { opacity: 0; transform: scaleX(1); }
+}
+.win {
+  position: absolute;
+  width: 178px;
+  height: 118px;
+  border: 1px solid var(--cp-border-strong);
+  border-radius: 8px;
+  background: var(--cp-surface);
+  box-shadow: var(--cp-shadow);
+  overflow: hidden;
+}
+.win::before {
+  content: "";
+  display: block;
+  height: 30px;
+  border-bottom: 1px solid var(--cp-border);
+  background:
+    radial-gradient(circle at calc(100% - 14px) 15px, var(--cp-text-soft) 2px, transparent 2.6px),
+    radial-gradient(circle at calc(100% - 30px) 15px, var(--cp-text-soft) 2px, transparent 2.6px),
+    radial-gradient(circle at calc(100% - 46px) 15px, var(--cp-text-soft) 2px, transparent 2.6px),
+    var(--cp-bg-elevated);
+}
+.win::after {
+  content: "";
+  position: absolute;
+  left: 12px; right: 12px; top: 44px; height: 10px;
+  border-radius: 4px;
+  background: var(--cp-accent-soft);
+  box-shadow: 0 22px 0 -4px var(--cp-surface-soft), 0 38px 0 -4px var(--cp-surface-soft);
+}
+.jump .win { left: 22px; top: 82px; animation: jumpWin 2.2s steps(2, end) infinite; }
+.ease .win { left: 22px; top: 82px; animation: easeWin 2.2s cubic-bezier(0,0,0,1) infinite; }
+@keyframes jumpWin {
+  0%, 35% { transform: translate(0,0); opacity: 1; }
+  36%, 70% { transform: translate(220px,38px) scale(1.14); opacity: .85; }
+  100% { transform: translate(0,0); opacity: 1; }
+}
+@keyframes easeWin {
+  0%, 18% { transform: translate(0,0) scale(.98); opacity: .95; }
+  50% { transform: translate(220px,38px) scale(1.14); opacity: 1; }
+  100% { transform: translate(0,0) scale(.98); opacity: .95; }
+}
+.nav-demo .surface {
+  position: absolute;
+  inset: 28px;
+  border: 1px solid var(--cp-border);
+  border-radius: var(--cp-radius-card);
+  background: var(--cp-surface);
+  padding: 18px;
+}
+.nav-demo .page { position: absolute; inset: 54px 28px 28px; border-radius: var(--cp-radius-card); background: var(--cp-surface-soft); border: 1px solid var(--cp-border); }
+.nav-demo.refresh .page { animation: pageRefresh 2.6s cubic-bezier(0,0,0,1) infinite; }
+.nav-demo.drill .page { animation: drillIn 2.6s cubic-bezier(.55,.55,0,1) infinite; }
+@keyframes pageRefresh {
+  0%, 25% { transform: translateY(34px); opacity: 0; }
+  45%, 100% { transform: translateY(0); opacity: 1; }
+}
+@keyframes drillIn {
+  0%, 25% { transform: translateX(80px) scale(.96); opacity: 0; }
+  45%, 100% { transform: translateX(0) scale(1); opacity: 1; }
+}
+.connected .tile {
+  position: absolute;
+  width: 82px;
+  height: 82px;
+  left: 36px;
+  top: 160px;
+  border-radius: var(--cp-radius-card);
+  background: var(--cp-accent-fill);
+  animation: connectedTile 3s cubic-bezier(0,0,0,1) infinite;
+}
+.connected .header {
+  position: absolute;
+  right: 28px;
+  top: 28px;
+  width: 220px;
+  height: 90px;
+  border-radius: var(--cp-radius-card);
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+}
+@keyframes connectedTile {
+  0%, 20% { transform: translate(0,0) scale(1); border-radius: 8px; }
+  55%, 100% { transform: translate(205px,-132px) scale(1.35); border-radius: 6px; }
+}
+.icon-button {
+  width: 76px;
+  height: 76px;
+  border-radius: var(--cp-radius-card);
+  display: grid;
+  place-items: center;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border-strong);
+}
+.search-icon {
+  width: 38px;
+  height: 38px;
+  border: 4px solid var(--cp-accent);
+  border-radius: 50%;
+  position: relative;
+  transition: transform 160ms ease-out;
+}
+.search-icon::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 4px;
+  right: -12px;
+  bottom: -6px;
+  border-radius: var(--cp-radius-control);
+  background: var(--cp-accent);
+  transform: rotate(45deg);
+  transition: transform 160ms ease-out;
+}
+.icon-button:hover .search-icon { transform: scale(.9); }
+.icon-button:hover .search-icon::after { transform: rotate(0deg) translateX(-8px); }
+.skeleton { padding: 18px; }
+.line {
+  height: 14px;
+  border-radius: var(--cp-radius-control);
+  margin-bottom: 14px;
+  background: var(--cp-border-strong);
+  overflow: hidden;
+  position: relative;
+}
+.line::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, var(--cp-sheen), transparent);
+  animation: shimmer 1.4s linear infinite;
+}
+@keyframes shimmer { to { transform: translateX(100%); } }
+.footnote { font-size: 12px; color: var(--cp-text-soft); margin-top: 14px; }
+.speaker { color: var(--cp-text-muted); font-size: 14px; }
+.speaker-notes {
+  display: none;
+  margin-top: 18px;
+  padding: 16px 18px;
+  border: 1px solid var(--cp-border);
+  border-radius: var(--cp-radius-card);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--cp-shadow-card);
+}
+.speaker-notes h3 { font-size: 14px; margin: 0 0 8px; color: var(--cp-accent); }
+.speaker-notes p { margin: 0; font-size: 14px; line-height: 1.45; color: var(--cp-text-muted); }
+body.show-notes .slide.active .speaker-notes { display: block; }
+.slide-inner.split .speaker-notes { grid-column: 1 / -1; }
+.kpi-list { display: grid; gap: 10px; }
+.kpi {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 16px;
+  border: 1px solid var(--cp-border);
+  border-radius: var(--cp-radius-card);
+  background: var(--cp-surface);
+  box-shadow: var(--cp-shadow-card);
+}
+.kpi strong { color: var(--cp-accent); font-size: 22px; font-weight: 600; }
+.mini-slide {
+  min-height: 170px;
+  padding: 18px;
+  display: grid;
+  align-content: end;
+  transition: border-color 180ms ease-out, box-shadow 180ms ease-out;
+}
+.mini-slide:hover { border-color: var(--cp-border-strong); box-shadow: var(--cp-shadow); }
+.mini-slide .num { color: var(--cp-accent); font-weight: 600; font-size: 34px; }
+.hidden-motion *, .hidden-motion *::before, .hidden-motion *::after { animation: none !important; transition: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+@media (max-width: 900px) {
+  body { overflow: auto; }
+  .app { min-height: 100%; height: auto; }
+  .deck-shell { display: block; }
+  .rail { display: none; }
+  .stage { min-height: 75vh; }
+  .slide { position: relative; min-height: 75vh; }
+  .slide:not(.active) { display: none; }
+  .split, .three, .two, .four, .demo-grid, .timeline { grid-template-columns: 1fr; }
+}
+  </style>
+</head>
+<body>
+  <div class="app" id="app">
+    <main class="deck-shell">
+      <nav class="rail" id="rail" aria-label="Slide navigation"></nav>
+      <section class="stage" id="stage" aria-live="polite">
+
+        <article class="slide active" data-title="Title">
+          <div class="slide-inner split">
+            <div>
+              <div class="eyebrow">Windows · Motion · Perceived Performance</div>
+              <h1>Make Windows feel faster before it finishes loading.</h1>
+              <p class="lead">A case study on how Fluent motion can turn response, continuity, and progress into a visible platform quality bar.</p>
+            </div>
+            <div class="panel">
+              <div class="hero-motion" aria-hidden="true">
+                <div class="signal"></div>
+                <div class="shell-window">
+                  <span class="content-line accent"></span>
+                  <span class="content-line one"></span>
+                  <span class="content-line two"></span>
+                  <span class="content-line three"></span>
+                </div>
+                <div class="taskbar">
+                  <div class="task-icon windows"><span></span><span></span><span></span><span></span></div>
+                  <div class="task-icon"></div>
+                  <div class="task-icon"></div>
+                  <div class="task-icon"></div>
+                </div>
+              </div>
+              <p class="footnote">The goal is not more animation. The goal is clearer system state.</p>
+            </div>
+            <aside class="speaker-notes"><h3>Speaker notes</h3><p>Open with the core framing: this is not a request to decorate Windows. It is a case for making the OS feel more responsive by showing acknowledgement, continuity, and progress at the exact moments users are judging quality.</p></aside>
+          </div>
+        </article>
+
+        <article class="slide" data-title="Executive thesis">
+          <div class="slide-inner">
+            <div class="eyebrow">Executive thesis</div>
+            <h2>The perceived smoothness gap is often a communication gap.</h2>
+            <div class="three">
+              <div class="card"><h3>User judgement</h3><p>People judge speed by whether Windows reacts, stays coherent, and avoids dead frames.</p></div>
+              <div class="card"><h3>Engineering truth</h3><p>Latency, frame stability, CPU/GPU cost, power, and input delay still matter.</p></div>
+              <div class="card"><h3>Motion's role</h3><p>Motion connects those two worlds by making system state visible.</p></div>
+            </div>
+            <p class="quote">Motion is how the OS says, "I heard you, I am working, and this is still the same thing."</p>
+            <aside class="speaker-notes"><h3>Speaker notes</h3><p>Anchor the audience in the thesis. The issue is not that Windows lacks motion guidance; the issue is that important system moments still fail to communicate fast enough or consistently enough. Motion becomes a language for confidence.</p></aside>
+          </div>
+        </article>
+
+        <article class="slide compact" data-title="Evidence spine">
+          <div class="slide-inner">
+            <div class="eyebrow">Evidence spine</div>
+            <h2>Three facts explain why motion changes perceived quality.</h2>
+            <div class="timeline">
+              <div class="timebox"><strong>0.1s</strong><p>Users expect immediate acknowledgement that their input was received.</p></div>
+              <div class="timebox"><strong>1s</strong><p>Users can stay in flow if the interface shows work is underway.</p></div>
+              <div class="timebox"><strong>10s</strong><p>Attention breaks unless progress, status, and recovery are explicit.</p></div>
+            </div>
+            <div class="three">
+              <div class="source-card"><h3>Perception</h3><p>The first visible response matters as much as the final screen.</p><small>NN/g response-time thresholds</small></div>
+              <div class="source-card"><h3>Design language</h3><p>Fluent already frames motion as functional, natural, consistent, and purposeful.</p><small>Fluent 2 and Windows motion guidance</small></div>
+              <div class="source-card"><h3>Render budget</h3><p>Motion improves perception only when it stays smooth and cheap.</p><small>RAIL and animation performance guidance</small></div>
+            </div>
+            <aside class="speaker-notes"><h3>Speaker notes</h3><p>This slide creates credibility. Human perception gives the timing thresholds, Fluent gives the language, and engineering budgets give the constraint. The story is balanced: we are not proposing fake smoothness; we are proposing visible truth.</p></aside>
+          </div>
+        </article>
+
+        <article class="slide" data-title="Prior comparison">
+          <div class="slide-inner split">
+            <div>
+              <div class="eyebrow">Why users compare platforms</div>
+              <h2>"Mac feels smoother" is not a diagnosis. It is a signal.</h2>
+              <p class="lead">The useful question is not whether Windows should copy macOS. It is where Windows loses acknowledgement, continuity, or spatial confidence in everyday flows.</p>
+            </div>
+            <div class="panel">
+              <div class="kpi-list">
+                <div class="kpi"><strong>Signal</strong><span>Users remember whether state changes felt intentional.</span></div>
+                <div class="kpi"><strong>Moments</strong><span>Start, Search, taskbar, Snap, Settings, File Explorer, loading.</span></div>
+                <div class="kpi"><strong>Response</strong><span>Make motion unmistakably Windows and operationally consistent.</span></div>
+              </div>
+            </div>
+            <aside class="speaker-notes"><h3>Speaker notes</h3><p>Use the comparison carefully. The purpose is not to praise another platform; it is to translate a vague sentiment into specific Windows moments that can be audited, designed, and measured.</p></aside>
+          </div>
+        </article>
+
+        <article class="slide compact" data-title="Current Windows language">
+          <div class="slide-inner">
+            <div class="eyebrow">Fluent Windows language</div>
+            <h2>Windows already has the right motion principles.</h2>
+            <div class="five-card two">
+              <div class="card"><h3>Connected</h3><p>Preserve object identity when position, size, or surface changes.</p></div>
+              <div class="card"><h3>Consistent</h3><p>Use shared direction, timing, and easing for related entry points.</p></div>
+              <div class="card"><h3>Responsive</h3><p>Show that Windows recognized input before the final result is ready.</p></div>
+              <div class="card"><h3>Delightful</h3><p>Use brief, purposeful moments that reinforce completion or state.</p></div>
+              <div class="card"><h3>Resourceful</h3><p>Start from WinUI defaults and standard motion resources.</p></div>
+              <div class="card"><h3>The gap</h3><p>The opportunity is adoption, measurement, and cross-surface quality.</p></div>
+            </div>
+            <aside class="speaker-notes"><h3>Speaker notes</h3><p>This is the pivot: the deck is not inventing a new language. It argues that Windows should operationalize its existing language so teams can apply it consistently and prove quality.</p></aside>
+          </div>
+        </article>
+
+        <article class="slide compact" data-title="Motion sample 1">
+          <div class="slide-inner">
+            <div class="eyebrow">Moment 1 · Object continuity</div>
+            <h2>A fast jump can still feel slow.</h2>
+            <div class="demo-grid">
+              <div>
+                <div class="demo-label"><span>Risk: object teleport</span><small>discontinuity</small></div>
+                <div class="demo-stage jump"><div class="win"></div></div>
+                <p>The window arrives quickly, but the user has to reconstruct what happened.</p>
+              </div>
+              <div>
+                <div class="demo-label"><span>Target: continuous transform</span><small>identity preserved</small></div>
+                <div class="demo-stage ease"><div class="win"></div></div>
+                <p>The same operation feels more confident because the object remains legible.</p>
+              </div>
+            </div>
+            <aside class="speaker-notes"><h3>Speaker notes</h3><p>Invite the audience to compare the two samples. The important point is that duration alone does not define perceived speed. Continuity reduces cognitive work.</p></aside>
+          </div>
+        </article>
+
+        <article class="slide compact" data-title="Motion sample 2">
+          <div class="slide-inner">
+            <div class="eyebrow">Moment 2 · Navigation meaning</div>
+            <h2>Motion should tell users where they went.</h2>
+            <div class="demo-grid">
+              <div>
+                <div class="demo-label"><span>Page refresh</span><small>top-level reset</small></div>
+                <div class="demo-stage nav-demo refresh"><div class="surface"><strong>Top-level destination</strong><div class="page"></div></div></div>
+                <p>Use refresh when the user starts over at the top of a stack.</p>
+              </div>
+              <div>
+                <div class="demo-label"><span>Drill</span><small>deeper into content</small></div>
+                <div class="demo-stage nav-demo drill"><div class="surface"><strong>Details destination</strong><div class="page"></div></div></div>
+                <p>Use drill when the user moves deeper into related content.</p>
+              </div>
+            </div>
+            <aside class="speaker-notes"><h3>Speaker notes</h3><p>The audience should leave this slide with a simple rule: navigation transitions are not arbitrary effects. They are spatial grammar for hierarchy.</p></aside>
+          </div>
+        </article>
+
+        <article class="slide" data-title="Motion sample 3">
+          <div class="slide-inner split">
+            <div>
+              <div class="eyebrow">Moment 3 · Shared elements</div>
+              <h2>If the object continues, the user continues with it.</h2>
+              <p class="lead">Connected animation helps a tile, thumbnail, result, or window remain the same object as it moves into a new state.</p>
+              <p>Best use cases: search result to detail, file tile to preview, photo thumbnail to editor, product card to header.</p>
+            </div>
+            <div class="panel">
+              <div class="demo-stage connected">
+                <div class="header"></div>
+                <div class="tile"></div>
+              </div>
+              <p class="footnote">Continuity lowers the mental cost of state change.</p>
+            </div>
+            <aside class="speaker-notes"><h3>Speaker notes</h3><p>Connected animation is the clearest example of motion as meaning. It answers the user's question: is this still the same thing I selected?</p></aside>
+          </div>
+        </article>
+
+        <article class="slide" data-title="Motion sample 4">
+          <div class="slide-inner split">
+            <div>
+              <div class="eyebrow">Moment 4 · Micro feedback</div>
+              <h2>Small motion should prove the control is alive.</h2>
+              <p class="lead">Icon and control motion should be state-triggered: hover, click, selected, expanded, collapsed, or completed.</p>
+              <p>Do not loop motion just to make a surface feel busy.</p>
+            </div>
+            <div class="panel">
+              <button class="icon-button" aria-label="Hover sample search icon"><span class="search-icon"></span></button>
+              <p class="footnote">Short, reversible, and tied to interaction state.</p>
+            </div>
+            <aside class="speaker-notes"><h3>Speaker notes</h3><p>Use this as a restraint slide. Micro-motion is valuable because it confirms interaction, not because every icon needs personality all the time.</p></aside>
+          </div>
+        </article>
+
+        <article class="slide" data-title="Motion sample 5">
+          <div class="slide-inner split">
+            <div>
+              <div class="eyebrow">Moment 5 · Waiting</div>
+              <h2>A blank wait reads as uncertainty.</h2>
+              <p class="lead">Skeletons, progressive reveal, and determinate progress make real work visible without pretending the system is faster than it is.</p>
+            </div>
+            <div class="panel skeleton">
+              <div class="line"></div>
+              <div class="line"></div>
+              <div class="line"></div>
+              <div class="line"></div>
+              <p class="footnote">Use skeletons when structure is known; use progress when work is measurable.</p>
+            </div>
+            <aside class="speaker-notes"><h3>Speaker notes</h3><p>Make the distinction between honest progress and decorative loading. The goal is to remove doubt, not hide latency.</p></aside>
+          </div>
+        </article>
+
+        <article class="slide compact" data-title="Diagnosis framework">
+          <div class="slide-inner">
+            <div class="eyebrow">Diagnosis framework</div>
+            <h2>Translate "feels janky" into diagnosable moments.</h2>
+            <div class="matrix">
+              <div class="head">Moment</div><div class="head">Failure mode</div><div class="head">Motion fix</div>
+              <div>Launch / open</div><div>No visible acknowledgement or content appears all at once.</div><div>Immediate response plus progressive reveal.</div>
+              <div>Window management</div><div>Snap, maximize, and restore feel like geometry teleporting.</div><div>Continuous transform with velocity continuity.</div>
+              <div>Navigation</div><div>Hierarchy is unclear after the screen changes.</div><div>Refresh, drill, and sibling semantics.</div>
+              <div>System surfaces</div><div>Start, Search, Quick Settings, and notifications feel unrelated.</div><div>Shared entry and dismissal grammar.</div>
+              <div>Loading states</div><div>Spinner-only or empty waits read as broken.</div><div>Skeleton, progressive reveal, or determinate progress.</div>
+            </div>
+            <aside class="speaker-notes"><h3>Speaker notes</h3><p>This is the practical bridge from design critique to engineering backlog. Each vague quality complaint becomes a moment, a failure mode, and a motion fix.</p></aside>
+          </div>
+        </article>
+
+        <article class="slide" data-title="Motion jobs">
+          <div class="slide-inner">
+            <div class="eyebrow">Motion model</div>
+            <h2>Every motion decision should earn one job.</h2>
+            <div class="four">
+              <div class="mini-slide"><div class="num">01</div><h3>Acknowledge</h3><p>Did the system hear me?</p></div>
+              <div class="mini-slide"><div class="num">02</div><h3>Orient</h3><p>Where am I in the hierarchy?</p></div>
+              <div class="mini-slide"><div class="num">03</div><h3>Preserve</h3><p>Is this the same object?</p></div>
+              <div class="mini-slide"><div class="num">04</div><h3>Choreograph</h3><p>What should I look at next?</p></div>
+            </div>
+            <p class="quote">If motion does none of these, remove it. If it drops frames, redesign it.</p>
+            <aside class="speaker-notes"><h3>Speaker notes</h3><p>This is the memorable model for decision-making. It gives teams permission to use motion when it communicates and remove motion when it is merely decorative.</p></aside>
+          </div>
+        </article>
+
+        <article class="slide compact" data-title="Motion tokens">
+          <div class="slide-inner">
+            <div class="eyebrow">Design system proposal</div>
+            <h2>Turn principles into semantic motion tokens.</h2>
+            <div class="matrix">
+              <div class="head">Token</div><div class="head">Use cases</div><div class="head">Quality gate</div>
+              <div>Feedback.micro</div><div>Press, hover, selection, icon state.</div><div>Visible acknowledgement within the instant-response window.</div>
+              <div>Surface.enter.exit</div><div>Menus, flyouts, dialogs, taskbar surfaces.</div><div>Symmetric motion from the same entry point.</div>
+              <div>Navigate.hierarchy</div><div>Refresh, drill, sibling page transitions.</div><div>Direction matches information architecture.</div>
+              <div>Transform.object</div><div>Snap, maximize, restore, shared elements.</div><div>No teleport; frame stability holds.</div>
+              <div>Loading.progressive</div><div>Skeleton, list reveal, progress.</div><div>Truthful state; no fake delay.</div>
+            </div>
+            <aside class="speaker-notes"><h3>Speaker notes</h3><p>The token proposal changes motion from subjective taste into platform infrastructure. Tokens make it easier for teams to choose the correct pattern and harder to invent inconsistent custom motion.</p></aside>
+          </div>
+        </article>
+
+        <article class="slide" data-title="Render contract">
+          <div class="slide-inner">
+            <div class="eyebrow">Performance budget</div>
+            <h2>Motion only helps when it is cheaper than the uncertainty it removes.</h2>
+            <div class="three">
+              <div class="card"><h3>Prefer</h3><p>Transform, opacity, precomputed geometry, and short distance-aware durations.</p></div>
+              <div class="card"><h3>Avoid</h3><p>Layout animation, paint-heavy loops, long sequences, and competing motion.</p></div>
+              <div class="card"><h3>Gate</h3><p>Dropped frames, start delay, input latency, CPU/GPU cost, power, and fallback behavior.</p></div>
+            </div>
+            <aside class="speaker-notes"><h3>Speaker notes</h3><p>This slide keeps the proposal credible for engineering leaders. Smoothness is not a visual preference; it is a contract between design intent and render reality.</p></aside>
+          </div>
+        </article>
+
+        <article class="slide" data-title="Accessibility">
+          <div class="slide-inner split">
+            <div>
+              <div class="eyebrow">Accessibility and trust</div>
+              <h2>Reduced motion proves the design still communicates.</h2>
+              <p class="lead">Interaction-triggered non-essential motion must be disableable, and motion can trigger vestibular symptoms for some users.</p>
+            </div>
+            <div class="panel">
+              <p class="quote">Every animation needs a reduced-motion equivalent.</p>
+              <p>Use a fade, instant state change, static progress cue, or final-frame state. If meaning is lost, the design depended on motion too much.</p>
+            </div>
+            <aside class="speaker-notes"><h3>Speaker notes</h3><p>Frame accessibility as quality, not compliance overhead. A reduced-motion path tests whether the core information is still clear without the animation.</p></aside>
+          </div>
+        </article>
+
+        <article class="slide compact" data-title="Measurement">
+          <div class="slide-inner">
+            <div class="eyebrow">Measurement model</div>
+            <h2>Measure perception and render truth together.</h2>
+            <div class="kpi-list">
+              <div class="kpi"><strong>Perception</strong><span>Feels smooth, feels responsive, confidence, trust, preference.</span></div>
+              <div class="kpi"><strong>Scenario</strong><span>Start, Search, Snap, Settings, File Explorer, notifications, app launch.</span></div>
+              <div class="kpi"><strong>Motion</strong><span>Time to first feedback, animation start delay, completion time, semantic transition used.</span></div>
+              <div class="kpi"><strong>Render</strong><span>Frame drops, input latency, CPU/GPU, power, layout/paint cost, device class.</span></div>
+            </div>
+            <aside class="speaker-notes"><h3>Speaker notes</h3><p>The measurement story prevents the work from becoming taste-based. We should know both whether users feel the difference and whether the system can render the motion reliably.</p></aside>
+          </div>
+        </article>
+
+        <article class="slide compact" data-title="Priorities">
+          <div class="slide-inner">
+            <div class="eyebrow">Prioritized opportunities</div>
+            <h2>Start with the surfaces that define Windows' feel.</h2>
+            <div class="two">
+              <div class="card"><span class="pill">P0</span><h3>Start / Search / taskbar</h3><p>High-frequency moments where entry-point consistency shapes platform feel.</p></div>
+              <div class="card"><span class="pill">P0</span><h3>Snap / maximize / restore</h3><p>Signature Windows interactions where object continuity is highly visible.</p></div>
+              <div class="card"><span class="pill">P1</span><h3>Settings navigation</h3><p>WinUI-addressable hierarchy where refresh, drill, and sibling motion can be standardized.</p></div>
+              <div class="card"><span class="pill">P1</span><h3>Notifications</h3><p>Trust and attention moments that need calm entrance and dismissal rules.</p></div>
+              <div class="card"><span class="pill">P1</span><h3>Loading states</h3><p>Blank waits can become truthful progress and progressive reveal.</p></div>
+              <div class="card"><span class="pill">P2</span><h3>File Explorer</h3><p>Daily state changes where abrupt list and view updates accumulate.</p></div>
+            </div>
+            <aside class="speaker-notes"><h3>Speaker notes</h3><p>Prioritization matters because motion quality is broad. Start where frequency, visibility, and Windows identity are strongest, then expand the model to other surfaces.</p></aside>
+          </div>
+        </article>
+
+        <article class="slide" data-title="90 day roadmap">
+          <div class="slide-inner">
+            <div class="eyebrow">90-day path</div>
+            <h2>Move from case study to platform program.</h2>
+            <div class="three">
+              <div class="card"><h3>0-30 days · Baseline</h3><p>Audit top flows, capture comparison clips, and classify failures by motion job.</p></div>
+              <div class="card"><h3>31-60 days · Systemize</h3><p>Define tokens, reduced-motion equivalents, WinUI examples, and QA gates.</p></div>
+              <div class="card"><h3>61-90 days · Prove</h3><p>Pilot in P0 surfaces, run preference tests, and track frame stability.</p></div>
+            </div>
+            <p class="quote">The ask: sponsor a cross-surface motion quality bar with shared design and engineering ownership.</p>
+            <aside class="speaker-notes"><h3>Speaker notes</h3><p>This makes the recommendation actionable. The plan starts with observation, turns findings into reusable system assets, and proves the value in high-sentiment surfaces.</p></aside>
+          </div>
+        </article>
+
+        <article class="slide" data-title="Decision">
+          <div class="slide-inner split">
+            <div>
+              <div class="eyebrow">Decision needed</div>
+              <h2>Make perceived smoothness a platform property.</h2>
+              <p class="lead">Motion will not fix real latency. It can make Windows acknowledge sooner, preserve context better, and make true progress visible.</p>
+            </div>
+            <div class="panel">
+              <h3>Create a motion quality bar with:</h3>
+              <ul>
+                <li>semantic motion tokens</li>
+                <li>WinUI defaults and examples</li>
+                <li>reduced-motion equivalents</li>
+                <li>frame-budget gates</li>
+                <li>scenario perception metrics</li>
+              </ul>
+            </div>
+            <aside class="speaker-notes"><h3>Speaker notes</h3><p>Close with the decision, not the design detail. The ask is cross-surface ownership and a quality bar that treats motion as part of performance infrastructure.</p></aside>
+          </div>
+        </article>
+
+        <article class="slide compact" data-title="Sources">
+          <div class="slide-inner">
+            <div class="eyebrow">Sources and evidence</div>
+            <h2>Reference set behind the recommendation.</h2>
+            <div class="two">
+              <div class="source-card"><h3>Microsoft Fluent 2 Motion</h3><p>Motion defines relationships and transitions; principles: functional, natural, consistent, appealing.</p><small>https://fluent2.microsoft.design/motion</small></div>
+              <div class="source-card"><h3>Windows Motion</h3><p>Reactive, direct, context appropriate; connected, consistent, responsive, delightful, resourceful.</p><small>https://learn.microsoft.com/en-us/windows/apps/design/motion/</small></div>
+              <div class="source-card"><h3>Windows Page Transitions</h3><p>Refresh, drill, horizontal slide, and suppress semantics map motion to hierarchy.</p><small>https://learn.microsoft.com/en-us/windows/apps/design/motion/page-transitions</small></div>
+              <div class="source-card"><h3>Connected Animation</h3><p>Animating shared elements between views maintains context and continuity.</p><small>https://learn.microsoft.com/en-us/windows/apps/design/motion/connected-animation</small></div>
+              <div class="source-card"><h3>AnimatedIcon</h3><p>Icons should animate in response to user interaction and visual state changes.</p><small>https://learn.microsoft.com/en-us/windows/apps/design/controls/animated-icon</small></div>
+              <div class="source-card"><h3>NN/g Response Times</h3><p>0.1s, 1s, and 10s thresholds anchor human perception of responsiveness.</p><small>https://www.nngroup.com/articles/response-times-3-important-limits/</small></div>
+              <div class="source-card"><h3>NN/g Animation UX</h3><p>Animation should be brief, subtle, and useful for feedback, state change, navigation metaphors, and signifiers.</p><small>https://www.nngroup.com/articles/animation-purpose-ux/</small></div>
+              <div class="source-card"><h3>W3C / MDN / web.dev</h3><p>Reduced motion, transform/opacity performance, and frame-budget guidance.</p><small>WCAG 2.2, MDN prefers-reduced-motion, web.dev RAIL and animations guide</small></div>
+            </div>
+            <aside class="speaker-notes"><h3>Speaker notes</h3><p>Use this slide only if the audience asks for grounding. The key point is that the recommendation is based on Microsoft guidance, human perception research, accessibility requirements, and performance constraints.</p></aside>
+          </div>
+        </article>
+
+        <article class="slide" data-title="Overview">
+          <div class="slide-inner">
+            <div class="eyebrow">Story map</div>
+            <h2>Problem, proof, model, program.</h2>
+            <div class="four" id="overviewGrid"></div>
+            <aside class="speaker-notes"><h3>Speaker notes</h3><p>This slide is optional for navigation. Use it when presenting interactively or when someone wants to jump back to a specific part of the argument.</p></aside>
+          </div>
+        </article>
+
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll(".slide"));
+    const rail = document.getElementById("rail");
+    const overviewGrid = document.getElementById("overviewGrid");
+    let index = 0;
+
+    function goTo(nextIndex) {
+      index = Math.max(0, Math.min(slides.length - 1, nextIndex));
+      slides.forEach((slide, i) => slide.classList.toggle("active", i === index));
+      Array.from(rail.children).forEach((dot, i) => dot.classList.toggle("active", i === index));
+      location.hash = `slide-${index + 1}`;
+    }
+
+    slides.forEach((slide, i) => {
+      const dot = document.createElement("button");
+      dot.className = "dot";
+      dot.textContent = String(i + 1).padStart(2, "0");
+      dot.title = slide.dataset.title;
+      dot.addEventListener("click", () => goTo(i));
+      rail.appendChild(dot);
+
+      if (overviewGrid && i < slides.length - 1) {
+        const mini = document.createElement("button");
+        mini.className = "mini-slide";
+        mini.innerHTML = `<span class="num">${String(i + 1).padStart(2, "0")}</span><strong>${slide.dataset.title}</strong>`;
+        mini.addEventListener("click", () => goTo(i));
+        overviewGrid.appendChild(mini);
+      }
+    });
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight" || event.key === "PageDown" || event.key === " ") {
+        event.preventDefault();
+        goTo(index + 1);
+      }
+      if (event.key === "ArrowLeft" || event.key === "PageUp") {
+        event.preventDefault();
+        goTo(index - 1);
+      }
+      if (event.key === "Home") goTo(0);
+      if (event.key === "End") goTo(slides.length - 1);
+      if (event.key.toLowerCase() === "n") document.body.classList.toggle("show-notes");
+    });
+
+    const hashMatch = location.hash.match(/slide-(\d+)/);
+    goTo(hashMatch ? Number(hashMatch[1]) - 1 : 0);
+  </script>
+</body>
+</html>
