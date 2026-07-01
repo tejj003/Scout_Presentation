@@ -422,26 +422,26 @@
     .agent-visual {
       position: relative;
       min-height: 430px;
-      padding: 26px;
+      padding: 24px;
       overflow: hidden;
     }
     .agent-visual::before {
       content: "";
       position: absolute;
-      inset: 20px;
-      border: 1px solid var(--cp-border);
-      border-radius: 14px;
-      opacity: .5;
+      inset: -80px -60px auto auto;
+      width: 260px;
+      height: 260px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(236, 200, 142, 0.16), transparent 68%);
+      opacity: .85;
       pointer-events: none;
     }
     .agent-visual::after {
       content: "";
       position: absolute;
-      right: 28px;
-      bottom: 28px;
-      left: 28px;
-      height: 70px;
-      border-top: 1px solid var(--cp-accent-soft);
+      inset: 18px;
+      border: 1px solid var(--cp-border);
+      border-radius: 14px;
       opacity: .55;
       pointer-events: none;
     }
@@ -451,80 +451,149 @@
       height: 100%;
       display: grid;
       grid-template-rows: auto 1fr auto;
-      gap: 20px;
+      gap: 18px;
     }
     .agent-prompt,
     .agent-output,
-    .tool-node,
-    .scout-core {
+    .flow-card,
+    .scout-core,
+    .orbit-chip {
       border: 1px solid var(--cp-border-strong);
       border-radius: 16px;
       background: rgba(255, 255, 255, 0.05);
       box-shadow: inset 0 1px 0 var(--cp-sheen);
     }
     .agent-prompt {
-      width: min(360px, 100%);
+      width: min(410px, 100%);
       padding: 14px 16px;
       color: var(--cp-text);
       font-size: 15px;
-      line-height: 1.35;
+      line-height: 1.38;
+    }
+    .agent-prompt span,
+    .flow-card span {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--cp-accent);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .1em;
+      text-transform: uppercase;
     }
     .agent-flow {
       position: relative;
       display: grid;
-      grid-template-columns: 1fr 130px 1fr;
-      gap: 16px;
+      grid-template-columns: minmax(145px, 1fr) 136px minmax(160px, 1fr);
+      gap: 18px;
       align-items: center;
+      min-height: 220px;
     }
-    .tool-stack {
-      display: grid;
-      gap: 12px;
+    .flow-path {
+      position: absolute;
+      inset: 20px 0 24px;
+      width: 100%;
+      height: calc(100% - 44px);
+      pointer-events: none;
+      opacity: .95;
     }
-    .tool-node {
-      min-height: 58px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px;
-      color: var(--cp-text-muted);
+    .flow-track,
+    .flow-active {
+      fill: none;
+      stroke-linecap: round;
+      stroke-width: 2.4;
+    }
+    .flow-track { stroke: var(--cp-border-strong); opacity: .75; }
+    .flow-active {
+      stroke: var(--cp-accent);
+      stroke-dasharray: 90 520;
+      animation: flow-draw 2400ms ease-in-out infinite;
+      filter: drop-shadow(0 0 10px rgba(236, 200, 142, .5));
+    }
+    .flow-card {
+      position: relative;
+      z-index: 2;
+      min-height: 132px;
+      padding: 16px;
+      color: var(--cp-text);
+    }
+    .flow-card p {
+      margin: 0;
       font-size: 14px;
-      font-weight: 700;
+      line-height: 1.45;
     }
-    .tool-node svg { width: 20px; height: 20px; color: var(--cp-accent); flex: none; }
+    .flow-card svg { width: 22px; height: 22px; color: var(--cp-accent); margin-bottom: 10px; }
     .scout-core {
       position: relative;
-      width: 130px;
-      height: 130px;
+      z-index: 3;
+      width: 136px;
+      height: 136px;
       display: grid;
       place-items: center;
       color: var(--cp-accent);
-      background: radial-gradient(circle at center, rgba(236, 200, 142, 0.18), rgba(255, 255, 255, 0.04) 62%);
+      background: radial-gradient(circle at center, rgba(236, 200, 142, 0.24), rgba(255, 255, 255, 0.04) 64%);
+      box-shadow: 0 0 46px rgba(236, 200, 142, 0.16), inset 0 1px 0 var(--cp-sheen);
     }
-    .scout-core svg { width: 56px; height: 56px; }
-    .signal-line {
-      position: relative;
-      height: 2px;
-      overflow: hidden;
-      border-radius: 999px;
-      background: var(--cp-border-strong);
-    }
-    .signal-line::after {
+    .scout-core::before,
+    .scout-core::after {
       content: "";
       position: absolute;
-      inset: 0;
-      width: 42%;
+      inset: -12px;
+      border: 1px solid var(--cp-accent-soft);
       border-radius: inherit;
-      background: linear-gradient(90deg, transparent, var(--cp-accent), transparent);
-      animation: signal-flow 2200ms ease-in-out infinite;
+    }
+    .scout-core::after {
+      inset: -22px;
+      opacity: .55;
+      animation: core-pulse 2200ms ease-in-out infinite;
+    }
+    .scout-core svg { width: 58px; height: 58px; }
+    .scout-core span {
+      position: absolute;
+      bottom: 22px;
+      color: var(--cp-text-muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .orbit-chip {
+      position: absolute;
+      z-index: 4;
+      padding: 6px 9px;
+      color: var(--cp-text-muted);
+      font-size: 11px;
+      font-weight: 800;
+      animation: chip-glow 2400ms ease-in-out infinite;
+    }
+    .chip-files { top: -8px; left: 50%; transform: translateX(-50%); }
+    .chip-web { right: -26px; top: 48%; animation-delay: 260ms; }
+    .chip-m365 { bottom: -8px; left: 50%; transform: translateX(-50%); animation-delay: 520ms; }
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      color: var(--cp-text-muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .check-row::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--cp-accent);
+      box-shadow: 0 0 12px rgba(236, 200, 142, .6);
     }
     .agent-output {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 10px;
-      padding: 14px;
+      border-color: var(--cp-border);
+      padding: 12px;
     }
     .output-item {
-      min-height: 54px;
+      min-height: 46px;
       display: grid;
       place-items: center;
       border-radius: 0.625rem;
@@ -537,12 +606,11 @@
     .slide.active .agent-visual {
       animation: agent-rise 360ms ease-out both;
     }
-    .slide.active .tool-node,
+    .slide.active .flow-card,
     .slide.active .agent-output .output-item {
       animation: item-rise 360ms ease-out both;
     }
-    .slide.active .tool-node:nth-child(2) { animation-delay: 80ms; }
-    .slide.active .tool-node:nth-child(3) { animation-delay: 160ms; }
+    .slide.active .flow-card-result { animation-delay: 160ms; }
     .slide.active .agent-output .output-item:nth-child(1) { animation-delay: 180ms; }
     .slide.active .agent-output .output-item:nth-child(2) { animation-delay: 260ms; }
     .slide.active .agent-output .output-item:nth-child(3) { animation-delay: 340ms; }
@@ -554,9 +622,17 @@
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    @keyframes signal-flow {
-      from { transform: translateX(-100%); }
-      to { transform: translateX(240%); }
+    @keyframes flow-draw {
+      from { stroke-dashoffset: 520; }
+      to { stroke-dashoffset: -90; }
+    }
+    @keyframes core-pulse {
+      0%, 100% { transform: scale(.98); opacity: .35; }
+      50% { transform: scale(1.04); opacity: .85; }
+    }
+    @keyframes chip-glow {
+      0%, 100% { border-color: var(--cp-border); background: rgba(255, 255, 255, 0.04); }
+      50% { border-color: var(--cp-accent-soft); background: rgba(236, 200, 142, 0.10); }
     }
     .command {
       display: block;
@@ -664,15 +740,20 @@
       .slide { padding: 24px; }
       .screen-mock { grid-template-columns: 1fr; }
       .sidebar { display: none; }
+      .agent-flow { grid-template-columns: 1fr; min-height: auto; }
+      .flow-path { display: none; }
+      .scout-core { margin: 0 auto; }
+      .agent-output { grid-template-columns: 1fr; }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 1ms !important;
         transition-duration: 1ms !important;
       }
-      .signal-line::after {
+      .flow-active,
+      .scout-core::after,
+      .orbit-chip {
         animation: none !important;
-        transform: translateX(135%);
       }
     }
   </style>
@@ -756,19 +837,34 @@
             </div>
             <div class="agent-visual card" aria-label="Animated illustration of Scout turning chat into tools and evidence">
               <div class="agent-frame">
-                <div class="agent-prompt">Create the draft, check the context, and show me what changed.</div>
+                <div class="agent-prompt"><span>Your ask</span>Create the draft, check the context, and show me what changed.</div>
                 <div class="agent-flow">
-                  <div class="tool-stack">
-                    <div class="tool-node"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6"/></svg>Context</div>
-                    <div class="tool-node"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/><path d="M8 9h8"/></svg>Draft</div>
-                    <div class="tool-node"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.1V12a10 10 0 1 1-5.9-9.1"/><path d="m9 11 3 3L22 4"/></svg>Verify</div>
+                  <svg class="flow-path" viewBox="0 0 560 220" preserveAspectRatio="none" aria-hidden="true">
+                    <path class="flow-track" d="M118 112 C190 36 250 36 280 112 C310 188 386 188 442 112" />
+                    <path class="flow-active" d="M118 112 C190 36 250 36 280 112 C310 188 386 188 442 112" />
+                  </svg>
+                  <div class="flow-card flow-card-ask">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/><path d="M8 9h8"/><path d="M8 13h5"/></svg>
+                    <span>Intent</span>
+                    <p>Ask Scout to turn rough input into finished work.</p>
                   </div>
-                  <div class="scout-core"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.7 5.2L19 10l-5.3 1.8L12 17l-1.7-5.2L5 10l5.3-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/><path d="M5 4l.7 1.8L8 6.5l-2.3.7L5 9l-.7-1.8L2 6.5l2.3-.7z"/></svg></div>
-                  <div class="signal-line" aria-hidden="true"></div>
+                  <div class="scout-core">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.7 5.2L19 10l-5.3 1.8L12 17l-1.7-5.2L5 10l5.3-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/><path d="M5 4l.7 1.8L8 6.5l-2.3.7L5 9l-.7-1.8L2 6.5l2.3-.7z"/></svg>
+                    <span>Scout</span>
+                    <div class="orbit-chip chip-files">Files</div>
+                    <div class="orbit-chip chip-web">Web</div>
+                    <div class="orbit-chip chip-m365">M365</div>
+                  </div>
+                  <div class="flow-card flow-card-result">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="m9 15 2 2 4-5"/></svg>
+                    <span>Reviewed result</span>
+                    <div class="check-row">Draft created</div>
+                    <div class="check-row">Evidence ready</div>
+                  </div>
                 </div>
                 <div class="agent-output">
-                  <div class="output-item">Action taken</div>
-                  <div class="output-item">Evidence shown</div>
+                  <div class="output-item">Context used</div>
+                  <div class="output-item">Changes shown</div>
                   <div class="output-item">Ready to review</div>
                 </div>
               </div>
