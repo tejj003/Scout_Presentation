@@ -291,8 +291,8 @@
       letter-spacing: -.018em;
     }
     .byline {
-      justify-self: end;
-      margin: 0 0 16px;
+      margin: 14px 0 0;
+      text-align: center;
       color: var(--cp-text-muted);
       font-size: 14px;
       font-weight: 700;
@@ -394,6 +394,7 @@
       background: var(--cp-surface);
       box-shadow: 0 0 2px var(--cp-border), 0 1px 2px var(--cp-border);
     }
+    .mock-group { display: grid; }
     .sidebar {
       padding: 18px;
       border-right: 1px solid var(--cp-border);
@@ -788,21 +789,23 @@
                 <span class="pill">Verify</span>
               </div>
             </div>
-            <div class="screen-mock">
-              <div class="sidebar">
-                <div class="sideitem active">Chat</div>
-                <div class="sideitem">Artifacts</div>
-                <div class="sideitem">Automations</div>
-                <div class="sideitem">Skills</div>
-                <div class="sideitem">Settings</div>
+            <div class="mock-group">
+              <div class="screen-mock">
+                <div class="sidebar">
+                  <div class="sideitem active">Chat</div>
+                  <div class="sideitem">Artifacts</div>
+                  <div class="sideitem">Automations</div>
+                  <div class="sideitem">Skills</div>
+                  <div class="sideitem">Settings</div>
+                </div>
+                <div class="workspace">
+                  <div class="chatline user">Create a one-page onboarding doc for a new teammate using these notes and links.</div>
+                  <div class="chatline">I can structure the doc, pull out the key context, draft sections, add an action checklist, and flag gaps for review.</div>
+                  <div class="chatline user">Make it concise, manager-ready, and easy to share.</div>
+                  <div class="chatline">Done. I’ll create a polished draft, show the assumptions, and keep the final send/edit decision with you.</div>
+                </div>
               </div>
-              <div class="workspace">
-                <p class="byline">with <strong>Tejj</strong> · tejj.in</p>
-                <div class="chatline user">Create a one-page onboarding doc for a new teammate using these notes and links.</div>
-                <div class="chatline">I can structure the doc, pull out the key context, draft sections, add an action checklist, and flag gaps for review.</div>
-                <div class="chatline user">Make it concise, manager-ready, and easy to share.</div>
-                <div class="chatline">Done. I’ll create a polished draft, show the assumptions, and keep the final send/edit decision with you.</div>
-              </div>
+              <p class="byline">with <strong>Tejj</strong> · tejj.in</p>
             </div>
           </div>
         </article>
