@@ -617,6 +617,98 @@
       font-weight: 700;
       text-align: center;
     }
+    .simple-agent {
+      display: grid;
+      align-items: center;
+    }
+    .simple-agent .agent-frame {
+      height: auto;
+      display: grid;
+      gap: 24px;
+    }
+    .simple-ask,
+    .simple-result,
+    .simple-step,
+    .simple-core {
+      border: 1px solid var(--cp-border-strong);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.05);
+      box-shadow: inset 0 1px 0 var(--cp-sheen);
+    }
+    .simple-ask {
+      padding: 18px 20px;
+      color: var(--cp-text);
+      font-size: 18px;
+      line-height: 1.36;
+    }
+    .simple-ask span,
+    .simple-step span,
+    .simple-result span {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--cp-accent);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .simple-flow {
+      display: grid;
+      grid-template-columns: 1fr 54px 140px 54px 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+    .simple-step {
+      min-height: 132px;
+      display: grid;
+      align-content: center;
+      justify-items: start;
+      padding: 18px;
+      color: var(--cp-text-muted);
+      font-size: 15px;
+      line-height: 1.38;
+    }
+    .simple-step svg,
+    .simple-core svg {
+      width: 30px;
+      height: 30px;
+      margin-bottom: 12px;
+      color: var(--cp-accent);
+    }
+    .simple-core {
+      width: 140px;
+      height: 140px;
+      display: grid;
+      place-items: center;
+      color: var(--cp-accent);
+      background: radial-gradient(circle at center, rgba(236, 200, 142, 0.24), rgba(255, 255, 255, 0.04) 64%);
+      box-shadow: 0 0 48px rgba(236, 200, 142, 0.18), inset 0 1px 0 var(--cp-sheen);
+      animation: core-pulse 2200ms ease-in-out infinite;
+    }
+    .simple-core strong {
+      display: block;
+      margin-top: -28px;
+      color: var(--cp-text);
+      font-size: 14px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .simple-arrow {
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, transparent, var(--cp-accent), transparent);
+      animation: arrow-glow 1800ms ease-in-out infinite;
+    }
+    .simple-result {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 16px 18px;
+      color: var(--cp-text-muted);
+      font-weight: 700;
+    }
+    .simple-result strong { color: var(--cp-text); }
     .slide.active .agent-visual {
       animation: agent-rise 360ms ease-out both;
     }
@@ -647,6 +739,10 @@
     @keyframes chip-glow {
       0%, 100% { border-color: var(--cp-border); background: rgba(255, 255, 255, 0.04); }
       50% { border-color: var(--cp-accent-soft); background: rgba(236, 200, 142, 0.10); }
+    }
+    @keyframes arrow-glow {
+      0%, 100% { opacity: .45; transform: scaleX(.86); }
+      50% { opacity: 1; transform: scaleX(1); }
     }
     .command {
       display: block;
@@ -754,9 +850,12 @@
       .slide { padding: 24px; }
       .screen-mock { grid-template-columns: 1fr; }
       .sidebar { display: none; }
-      .agent-flow { grid-template-columns: 1fr; min-height: auto; }
+      .agent-flow, .simple-flow { grid-template-columns: 1fr; min-height: auto; }
       .flow-path { display: none; }
       .scout-core { margin: 0 auto; }
+      .simple-core { margin: 0 auto; }
+      .simple-arrow { width: 2px; height: 32px; margin: 0 auto; transform-origin: center; }
+      .simple-result { align-items: flex-start; flex-direction: column; }
       .agent-output { grid-template-columns: 1fr; }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -852,37 +951,30 @@
                 <span class="pill">Evidence</span>
               </div>
             </div>
-            <div class="agent-visual card" aria-label="Animated illustration of Scout turning chat into tools and evidence">
+            <div class="agent-visual card simple-agent" aria-label="Simple illustration of Scout turning an ask into reviewed work">
               <div class="agent-frame">
-                <div class="agent-prompt"><span>Your ask</span>Create the draft, check the context, and show me what changed.</div>
-                <div class="agent-flow">
-                  <svg class="flow-path" viewBox="0 0 560 220" preserveAspectRatio="none" aria-hidden="true">
-                    <path class="flow-track" d="M118 112 C190 36 250 36 280 112 C310 188 386 188 442 112" />
-                    <path class="flow-active" d="M118 112 C190 36 250 36 280 112 C310 188 386 188 442 112" />
-                  </svg>
-                  <div class="flow-card flow-card-ask">
+                <div class="simple-ask"><span>Your ask</span>Create the draft, check the context, and show me what changed.</div>
+                <div class="simple-flow">
+                  <div class="simple-step">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/><path d="M8 9h8"/><path d="M8 13h5"/></svg>
-                    <span>Intent</span>
-                    <p>Ask Scout to turn rough input into finished work.</p>
+                    <span>Ask</span>
+                    Clear intent and context.
                   </div>
-                  <div class="scout-core">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.7 5.2L19 10l-5.3 1.8L12 17l-1.7-5.2L5 10l5.3-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/><path d="M5 4l.7 1.8L8 6.5l-2.3.7L5 9l-.7-1.8L2 6.5l2.3-.7z"/></svg>
-                    <span>Scout</span>
-                    <div class="orbit-chip chip-files">Files</div>
-                    <div class="orbit-chip chip-web">Web</div>
-                    <div class="orbit-chip chip-m365">M365</div>
+                  <div class="simple-arrow" aria-hidden="true"></div>
+                  <div class="simple-core">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.7 5.2L19 10l-5.3 1.8L12 17l-1.7-5.2L5 10l5.3-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>
+                    <strong>Scout</strong>
                   </div>
-                  <div class="flow-card flow-card-result">
+                  <div class="simple-arrow" aria-hidden="true"></div>
+                  <div class="simple-step">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="m9 15 2 2 4-5"/></svg>
-                    <span>Reviewed result</span>
-                    <div class="check-row">Draft created</div>
-                    <div class="check-row">Evidence ready</div>
+                    <span>Ready</span>
+                    Draft and evidence ready.
                   </div>
                 </div>
-                <div class="agent-output">
-                  <div class="output-item">Context used</div>
-                  <div class="output-item">Changes shown</div>
-                  <div class="output-item">Ready to review</div>
+                <div class="simple-result">
+                  <span>Outcome</span>
+                  <strong>Review once. Share with confidence.</strong>
                 </div>
               </div>
             </div>
