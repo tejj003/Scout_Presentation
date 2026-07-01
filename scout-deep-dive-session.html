@@ -310,16 +310,18 @@
       min-height: 170px;
     }
     .icon {
-      width: 36px;
-      height: 36px;
+      width: 54px;
+      height: 54px;
       display: grid;
       place-items: center;
-      border-radius: 0.625rem;
+      border-radius: 15px;
       color: var(--cp-accent-fg);
-      background: var(--cp-accent);
+      background: linear-gradient(180deg, var(--cp-accent-hover), var(--cp-accent));
       font-weight: 800;
+      font-size: 22px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 6px 16px rgba(0, 0, 0, 0.35);
     }
-    .icon svg { width: 20px; height: 20px; display: block; }
+    .icon svg { width: 30px; height: 30px; display: block; }
     .pillrow { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
     .pill {
       display: inline-flex;
