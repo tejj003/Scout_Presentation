@@ -800,31 +800,17 @@
         <h3>Speaker notes</h3>
         <p id="notesText"></p>
       </aside>
-
-      <footer class="bottombar">
-        <div class="progress"><span id="progress"></span></div>
-        <div class="counter" id="counter">01 / 14</div>
-        <div class="controls">
-          <button class="control" id="prev" type="button" aria-label="Previous slide">←</button>
-          <button class="control" id="notesBtn" type="button" aria-label="Toggle notes">N</button>
-          <button class="control" id="next" type="button" aria-label="Next slide">→</button>
-        </div>
-      </footer>
     </section>
   </main>
 
   <script>
     const slides = Array.from(document.querySelectorAll(".slide"));
-    const progress = document.getElementById("progress");
-    const counter = document.getElementById("counter");
     const notes = document.getElementById("notes");
     const notesText = document.getElementById("notesText");
     let index = 0;
 
     function sync(i) {
       index = Math.max(0, Math.min(slides.length - 1, i));
-      progress.style.width = `${((index + 1) / slides.length) * 100}%`;
-      counter.textContent = `${String(index + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")}`;
       notesText.textContent = slides[index].dataset.notes || "";
     }
 
@@ -840,9 +826,6 @@
       if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
-    document.getElementById("prev").addEventListener("click", () => goTo(index - 1));
-    document.getElementById("next").addEventListener("click", () => goTo(index + 1));
-    document.getElementById("notesBtn").addEventListener("click", () => notes.classList.toggle("open"));
     window.addEventListener("keydown", (event) => {
       if (event.key === "ArrowRight" || event.key === "PageDown") { event.preventDefault(); goTo(index + 1); }
       if (event.key === "ArrowLeft" || event.key === "PageUp") { event.preventDefault(); goTo(index - 1); }
