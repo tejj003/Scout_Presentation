@@ -109,7 +109,7 @@
     }
 
     * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; scroll-snap-type: y proximity; scroll-padding-bottom: 72px; }
+    html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
     body {
       margin: 0;
       min-height: 100%;
@@ -213,20 +213,22 @@
     }
     .slide {
       display: grid;
-      align-items: center;
       min-height: 100vh;
       scroll-snap-align: start;
-      padding: clamp(40px, 5vw, 72px);
-      border-bottom: 1px solid var(--cp-border);
+      scroll-snap-stop: always;
+      padding: clamp(16px, 2.6vh, 34px) clamp(24px, 3.6vw, 56px);
     }
     @keyframes slide-enter {
       from { opacity: 0; transform: translateY(12px); }
       to { opacity: 1; transform: translateY(0); }
     }
     .inner {
-      width: min(1120px, 100%);
+      width: min(1180px, 100%);
       margin: 0 auto;
-      padding: clamp(28px, 3.4vw, 52px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(32px, 4vw, 64px);
       border: 1px solid var(--cp-border-strong);
       border-radius: 28px;
       background: var(--cp-panel);
@@ -239,6 +241,7 @@
       grid-template-columns: minmax(0, 0.95fr) minmax(360px, 1.05fr);
       gap: clamp(28px, 4vw, 56px);
       align-items: center;
+      align-content: center;
     }
     .split.reverse { grid-template-columns: minmax(420px, 1.06fr) minmax(0, .94fr); }
     .stack { display: grid; gap: 20px; }
