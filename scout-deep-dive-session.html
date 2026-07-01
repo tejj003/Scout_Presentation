@@ -128,7 +128,7 @@
     .deck {
       height: 100%;
       display: grid;
-      grid-template-columns: 88px 1fr;
+      grid-template-columns: 1fr;
       background:
         radial-gradient(1100px 780px at 86% 26%, rgba(236, 200, 142, 0.12), transparent 55%),
         radial-gradient(820px 680px at 8% 16%, rgba(74, 122, 200, 0.12), transparent 55%),
@@ -521,11 +521,6 @@
 </head>
 <body>
   <main class="deck">
-    <aside class="rail">
-      <div class="mark">S</div>
-      <nav class="navdots" id="navdots" aria-label="Slides"></nav>
-    </aside>
-
     <section class="main">
       <header class="topbar">
         <div class="brand">
@@ -831,26 +826,15 @@
 
   <script>
     const slides = Array.from(document.querySelectorAll(".slide"));
-    const nav = document.getElementById("navdots");
     const progress = document.getElementById("progress");
     const counter = document.getElementById("counter");
     const notes = document.getElementById("notes");
     const notesText = document.getElementById("notesText");
     let index = 0;
 
-    slides.forEach((_, i) => {
-      const button = document.createElement("button");
-      button.className = "dot";
-      button.type = "button";
-      button.textContent = String(i + 1).padStart(2, "0");
-      button.addEventListener("click", () => show(i));
-      nav.appendChild(button);
-    });
-
     function show(next) {
       index = Math.max(0, Math.min(slides.length - 1, next));
       slides.forEach((slide, i) => slide.classList.toggle("active", i === index));
-      Array.from(nav.children).forEach((dot, i) => dot.classList.toggle("active", i === index));
       progress.style.width = `${((index + 1) / slides.length) * 100}%`;
       counter.textContent = `${String(index + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")}`;
       notesText.textContent = slides[index].dataset.notes || "";
