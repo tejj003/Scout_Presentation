@@ -243,6 +243,10 @@
     .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
     .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
     .grid4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+    .loop-grid {
+      gap: clamp(22px, 2vw, 30px);
+      margin-top: clamp(28px, 4vh, 42px);
+    }
     .eyebrow {
       margin: 0 0 16px;
       color: var(--cp-accent);
@@ -308,6 +312,11 @@
       grid-template-rows: auto auto 1fr;
       gap: 8px;
       min-height: 170px;
+    }
+    .loop-grid .feature {
+      gap: 16px;
+      min-height: 220px;
+      padding: 28px;
     }
     .icon {
       width: 36px;
@@ -580,7 +589,7 @@
           <div class="inner">
             <p class="eyebrow">Mental model</p>
             <h2>The Scout loop: ask, ground, build, verify.</h2>
-            <div class="grid4">
+            <div class="grid4 loop-grid">
               <div class="feature"><div class="icon">1</div><h3>Ask</h3><p>Describe the job, the audience, the format, and the decision you need.</p></div>
               <div class="feature"><div class="icon">2</div><h3>Ground</h3><p>Add the notes, files, messages, links, or screenshots Scout should use.</p></div>
               <div class="feature"><div class="icon">3</div><h3>Build</h3><p>Let Scout create the draft, document, summary, workflow, or checked output.</p></div>
