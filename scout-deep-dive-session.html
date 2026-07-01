@@ -109,10 +109,10 @@
     }
 
     * { box-sizing: border-box; }
-    html, body { height: 100%; }
+    html { scroll-behavior: smooth; scroll-snap-type: y proximity; scroll-padding-bottom: 72px; }
     body {
       margin: 0;
-      overflow: hidden;
+      min-height: 100%;
       font-family: Aptos, "Segoe UI Variable Text", "Segoe UI", Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--cp-bg);
       color: var(--cp-text);
@@ -126,7 +126,6 @@
       cursor: pointer;
     }
     .deck {
-      height: 100%;
       display: grid;
       grid-template-columns: 1fr;
       background:
@@ -134,6 +133,7 @@
         radial-gradient(820px 680px at 8% 16%, rgba(74, 122, 200, 0.12), transparent 55%),
         radial-gradient(760px 620px at 62% 96%, rgba(74, 122, 200, 0.08), transparent 60%),
         linear-gradient(140deg, var(--cp-bg), var(--cp-bg-elevated) 58%, #070a10);
+      background-attachment: fixed;
     }
     .rail {
       display: flex;
@@ -177,10 +177,8 @@
       border-color: var(--cp-accent);
     }
     .main {
-      display: grid;
-      grid-template-rows: 68px 1fr 64px;
+      display: block;
       min-width: 0;
-      min-height: 0;
     }
     .topbar, .bottombar {
       display: flex;
@@ -196,6 +194,12 @@
       backdrop-filter: blur(18px);
     }
     .bottombar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 40;
+      height: 64px;
       border-top: 1px solid var(--cp-border);
       background: var(--cp-overlay);
       backdrop-filter: blur(18px);
@@ -205,22 +209,15 @@
     .brand { display: flex; align-items: center; gap: 10px; }
     .ms-logo { display: block; border-radius: 2px; }
     .stage {
-      position: relative;
-      overflow: hidden;
       min-width: 0;
-      min-height: 0;
     }
     .slide {
-      position: absolute;
-      inset: 0;
-      display: none;
-      overflow: auto;
-      padding: clamp(32px, 4vw, 56px);
-    }
-    .slide.active {
       display: grid;
       align-items: center;
-      animation: slide-enter 260ms ease-out;
+      min-height: 100vh;
+      scroll-snap-align: start;
+      padding: clamp(40px, 5vw, 72px);
+      border-bottom: 1px solid var(--cp-border);
     }
     @keyframes slide-enter {
       from { opacity: 0; transform: translateY(12px); }
@@ -479,10 +476,10 @@
     .control:hover { transform: translateY(-1px); border-color: var(--cp-border-strong); }
     .counter { min-width: 72px; text-align: center; font-variant-numeric: tabular-nums; }
     .notes {
-      position: absolute;
+      position: fixed;
       right: 24px;
       bottom: 82px;
-      z-index: 30;
+      z-index: 50;
       display: none;
       width: min(500px, calc(100vw - 48px));
       max-height: min(440px, calc(100vh - 160px));
@@ -522,19 +519,6 @@
 <body>
   <main class="deck">
     <section class="main">
-      <header class="topbar">
-        <div class="brand">
-          <svg class="ms-logo" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
-            <rect x="0" y="0" width="9" height="9" fill="#F25022" />
-            <rect x="11" y="0" width="9" height="9" fill="#7FBA00" />
-            <rect x="0" y="11" width="9" height="9" fill="#00A4EF" />
-            <rect x="11" y="11" width="9" height="9" fill="#FFB900" />
-          </svg>
-          <strong>Microsoft Scout deep dive</strong>
-        </div>
-        <span>15-20 min internal session · beautiful HTML presentation</span>
-      </header>
-
       <section class="stage" id="stage">
         <article class="slide active" data-notes="Open by setting expectation: this is not a generic AI overview. It is a practical look at Scout as a workbench that can use tools, make artifacts, and automate work with approvals.">
           <div class="inner split">
@@ -832,24 +816,35 @@
     const notesText = document.getElementById("notesText");
     let index = 0;
 
-    function show(next) {
-      index = Math.max(0, Math.min(slides.length - 1, next));
-      slides.forEach((slide, i) => slide.classList.toggle("active", i === index));
+    function sync(i) {
+      index = Math.max(0, Math.min(slides.length - 1, i));
       progress.style.width = `${((index + 1) / slides.length) * 100}%`;
       counter.textContent = `${String(index + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")}`;
       notesText.textContent = slides[index].dataset.notes || "";
     }
 
-    document.getElementById("prev").addEventListener("click", () => show(index - 1));
-    document.getElementById("next").addEventListener("click", () => show(index + 1));
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) sync(slides.indexOf(entry.target));
+      });
+    }, { rootMargin: "-45% 0px -45% 0px" });
+    slides.forEach((slide) => io.observe(slide));
+
+    function goTo(i) {
+      const target = slides[Math.max(0, Math.min(slides.length - 1, i))];
+      if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    document.getElementById("prev").addEventListener("click", () => goTo(index - 1));
+    document.getElementById("next").addEventListener("click", () => goTo(index + 1));
     document.getElementById("notesBtn").addEventListener("click", () => notes.classList.toggle("open"));
     window.addEventListener("keydown", (event) => {
-      if (event.key === "ArrowRight" || event.key === "PageDown" || event.key === " ") show(index + 1);
-      if (event.key === "ArrowLeft" || event.key === "PageUp") show(index - 1);
+      if (event.key === "ArrowRight" || event.key === "PageDown") { event.preventDefault(); goTo(index + 1); }
+      if (event.key === "ArrowLeft" || event.key === "PageUp") { event.preventDefault(); goTo(index - 1); }
       if (event.key.toLowerCase() === "n") notes.classList.toggle("open");
       if (event.key.toLowerCase() === "f") document.documentElement.requestFullscreen?.();
     });
-    show(0);
+    sync(0);
   </script>
 </body>
 </html>
