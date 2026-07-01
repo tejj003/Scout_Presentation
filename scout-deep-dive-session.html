@@ -624,7 +624,7 @@
     .simple-agent .agent-frame {
       height: auto;
       display: grid;
-      gap: 24px;
+      gap: 26px;
     }
     .simple-ask,
     .simple-result,
@@ -640,6 +640,7 @@
       color: var(--cp-text);
       font-size: 18px;
       line-height: 1.36;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.025));
     }
     .simple-ask span,
     .simple-step span,
@@ -654,68 +655,104 @@
     }
     .simple-flow {
       display: grid;
-      grid-template-columns: 1fr 54px 140px 54px 1fr;
-      gap: 12px;
+      grid-template-columns: minmax(128px, 1fr) 42px 156px 42px minmax(128px, 1fr);
+      gap: 10px;
       align-items: center;
     }
     .simple-step {
-      min-height: 132px;
+      min-height: 148px;
       display: grid;
       align-content: center;
-      justify-items: start;
+      justify-items: center;
       padding: 18px;
       color: var(--cp-text-muted);
       font-size: 15px;
       line-height: 1.38;
+      text-align: center;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.025));
     }
     .simple-step svg,
     .simple-core svg {
-      width: 30px;
-      height: 30px;
+      width: 34px;
+      height: 34px;
       margin-bottom: 12px;
       color: var(--cp-accent);
     }
     .simple-core {
-      width: 140px;
-      height: 140px;
+      position: relative;
+      width: 156px;
+      height: 156px;
       display: grid;
-      place-items: center;
+      grid-template-rows: 1fr auto;
+      align-items: center;
+      justify-items: center;
+      padding: 26px 0 22px;
       color: var(--cp-accent);
       background: radial-gradient(circle at center, rgba(236, 200, 142, 0.24), rgba(255, 255, 255, 0.04) 64%);
       box-shadow: 0 0 48px rgba(236, 200, 142, 0.18), inset 0 1px 0 var(--cp-sheen);
       animation: core-pulse 2200ms ease-in-out infinite;
     }
+    .simple-core::before {
+      content: "";
+      position: absolute;
+      inset: 12px;
+      border: 1px solid var(--cp-accent-soft);
+      border-radius: 12px;
+      pointer-events: none;
+    }
+    .simple-core svg { margin: 0; }
     .simple-core strong {
       display: block;
-      margin-top: -28px;
+      margin: 0;
       color: var(--cp-text);
       font-size: 14px;
       letter-spacing: .08em;
       text-transform: uppercase;
     }
     .simple-arrow {
+      position: relative;
       height: 2px;
       border-radius: 999px;
-      background: linear-gradient(90deg, transparent, var(--cp-accent), transparent);
+      background: linear-gradient(90deg, transparent, rgba(236, 200, 142, .32), transparent);
       animation: arrow-glow 1800ms ease-in-out infinite;
     }
+    .simple-arrow::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--cp-accent);
+      box-shadow: 0 0 16px rgba(236, 200, 142, .8);
+      transform: translate(-50%, -50%);
+      animation: arrow-dot 1800ms ease-in-out infinite;
+    }
     .simple-result {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      padding: 16px 18px;
+      display: grid;
+      place-items: center;
+      gap: 6px;
+      padding: 18px;
       color: var(--cp-text-muted);
       font-weight: 700;
+      text-align: center;
+      border-color: var(--cp-accent-soft);
+      background: linear-gradient(180deg, rgba(236, 200, 142, 0.12), rgba(255, 255, 255, 0.035));
     }
-    .simple-result strong { color: var(--cp-text); }
+    .simple-result span { margin-bottom: 0; }
+    .simple-result strong { color: var(--cp-text); font-size: 17px; }
     .slide.active .agent-visual {
       animation: agent-rise 360ms ease-out both;
     }
     .slide.active .flow-card,
+    .slide.active .simple-step,
+    .slide.active .simple-result,
     .slide.active .agent-output .output-item {
       animation: item-rise 360ms ease-out both;
     }
+    .slide.active .simple-step:nth-child(5) { animation-delay: 130ms; }
+    .slide.active .simple-result { animation-delay: 220ms; }
     .slide.active .flow-card-result { animation-delay: 160ms; }
     .slide.active .agent-output .output-item:nth-child(1) { animation-delay: 180ms; }
     .slide.active .agent-output .output-item:nth-child(2) { animation-delay: 260ms; }
@@ -743,6 +780,11 @@
     @keyframes arrow-glow {
       0%, 100% { opacity: .45; transform: scaleX(.86); }
       50% { opacity: 1; transform: scaleX(1); }
+    }
+    @keyframes arrow-dot {
+      0% { left: 0; opacity: 0; }
+      18%, 82% { opacity: 1; }
+      100% { left: 100%; opacity: 0; }
     }
     .command {
       display: block;
@@ -865,7 +907,10 @@
       }
       .flow-active,
       .scout-core::after,
-      .orbit-chip {
+      .orbit-chip,
+      .simple-core,
+      .simple-arrow,
+      .simple-arrow::after {
         animation: none !important;
       }
     }
